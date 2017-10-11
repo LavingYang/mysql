@@ -1,6 +1,6 @@
 #!/bin/sh
 MYSQL_USER="root"
-MYSQL_PASSWORD="in"
+MYSQL_PASSWORD="xxx"
 MYSQL=$(which mysql)
 
 function get_mysql_status() {
