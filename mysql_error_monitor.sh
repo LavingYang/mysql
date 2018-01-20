@@ -1,7 +1,6 @@
 #!/bin/bash
 
 TMP_LOG="/tmp/${0##*/}.log"
-LOCK_FILE="/tmp/${0##*/}.lock"
 Q_LOG=/tmp/lastest.log
 
 VSTART=$(date -d "10 min ago" +"%s")
@@ -35,8 +34,8 @@ function get_df_mycnf_errpath () {
   echo "$ERR_PATH"
 }
 
-# Main
 
+# Main
 MYSQLV=$($MYSQL -V | awk '{ print $5}' | cut -c 1-3)
 echo "$MYSQLV"
 
@@ -74,7 +73,8 @@ while read -r Line
         elif [ "$(bc <<< "$MYSQLV < 5.6")" -eq 1 ]; then
           log_date=$(echo "$Line" | awk '{print $1" "$2}')
         else
-          log_date=$(echo "$Line" | awk '{print $1}' | awk -F "." '{print $1}')
+          log_date_T=$(echo "$Line" | awk '{print $1}' | awk -F "." '{print $1}')
+          log_date=${log_date_T//'T'/' '}
         fi
 
         Line_time=$(date --date="$log_date" +"%s")
@@ -87,5 +87,4 @@ if [ "$(wc -l < "$TMP_LOG")" -gt 0 ];
   then
         mail -s "[ERROR][$HOSTNAME] Error Log Monitor" xxx@xxx.xxx <"$TMP_LOG"
 fi
-
 
